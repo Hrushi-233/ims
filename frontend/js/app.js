@@ -19,6 +19,9 @@ const state = {
     currentPath: 'dashboard',
     user: auth.getUser()
 };
+if (!state.user) {
+    window.location.href = 'login.html';
+}
 console.log('Current User Role:', state.user ? state.user.role : 'Guest');
 
 let salesChartInstance = null;
@@ -26,7 +29,7 @@ let salesChartInstance = null;
 // --- Initialization ---
 function init() {
     auth.checkAuth();
-    
+
     // Set initial path based on role
     state.currentPath = 'dashboard';
 
@@ -35,10 +38,10 @@ function init() {
     renderCurrentPage();
 
     document.getElementById('logout-btn').onclick = () => auth.logout();
-    
+
     // Listen for hash changes if we want back button support
     window.addEventListener('hashchange', handleHashChange);
-    
+
     // Check initial hash
     if (window.location.hash) {
         const hash = window.location.hash.substring(1);
@@ -74,12 +77,12 @@ function renderSidebar() {
         const link = document.createElement('a');
         link.href = `#${route.path}`;
         link.className = `sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg font-semibold transition-all hover:bg-white/5 hover:text-white ${state.currentPath === route.path ? 'active text-white' : 'text-slate-400'}`;
-        
+
         link.innerHTML = `
             <i data-lucide="${route.icon}" class="w-5 h-5"></i>
             <span>${route.label}</span>
         `;
-        
+
         navLinks.appendChild(link);
     });
 
@@ -95,7 +98,7 @@ function renderTopBar() {
 function renderCurrentPage() {
     const contentArea = document.getElementById('content-area');
     const pageTitle = document.getElementById('page-title');
-    
+
     const route = ROUTES.find(r => r.path === state.currentPath);
     pageTitle.textContent = route ? route.label : 'Not Found';
 
@@ -105,7 +108,7 @@ function renderCurrentPage() {
         </div>
     `;
 
-    switch(state.currentPath) {
+    switch (state.currentPath) {
         case 'dashboard': renderDashboard(); break;
         case 'products': renderProducts(); break;
         case 'sales': renderSales(); break;
@@ -126,7 +129,7 @@ async function renderDashboard() {
     const container = document.getElementById('content-area');
     try {
         const stats = await api.get('/stats');
-        
+
         container.innerHTML = `
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
                 <div class="bg-white p-6 rounded-[24px] border border-slate-100 shadow-sm">
@@ -165,7 +168,7 @@ async function renderDashboard() {
         const trendData = await api.get('/sales-trend');
         const canvas = document.getElementById('salesChart');
         if (!canvas) return;
-        
+
         const ctx = canvas.getContext('2d');
         if (salesChartInstance) {
             salesChartInstance.destroy();
@@ -293,7 +296,7 @@ async function renderProducts() {
             const product = products.find(p => p.id === id);
             renderProductModal(product, categories, suppliers);
         };
-        
+
         window.deleteProduct = async (id) => {
             if (confirm('Are you sure you want to delete this product?')) {
                 try {
@@ -402,7 +405,7 @@ async function renderSales() {
                     </div>
                 </div>
             `).join('');
-            
+
             lucide.createIcons();
 
             const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -415,7 +418,7 @@ async function renderSales() {
         window.addToCart = (id) => {
             const product = products.find(p => p.id === id);
             if (product.quantity <= 0) return alert('Out of stock!');
-            
+
             const existing = cart.find(item => item.id === id);
             if (existing) {
                 if (existing.quantity >= product.quantity) return alert('Cannot exceed available stock!');
@@ -494,7 +497,7 @@ async function renderCategories() {
 }
 
 async function renderSalesHistory() {
-     const container = document.getElementById('content-area');
+    const container = document.getElementById('content-area');
     try {
         const sales = await api.get('/sales');
         container.innerHTML = `
@@ -581,7 +584,7 @@ async function renderStockAlerts() {
                             <h5 class="font-extrabold text-slate-900 mb-1">${a.product_name}</h5>
                             <p class="text-sm text-amber-700 font-bold mb-4">Current Stock: ${a.quantity}</p>
                             <div class="w-full bg-amber-200 h-2 rounded-full overflow-hidden">
-                                <div class="bg-amber-600 h-full" style="width: ${(a.quantity/a.threshold)*100}%"></div>
+                                <div class="bg-amber-600 h-full" style="width: ${(a.quantity / a.threshold) * 100}%"></div>
                             </div>
                         </div>
                     `).join('')}
@@ -717,7 +720,7 @@ init();
 function renderProductModal(product, categories, suppliers) {
     const isEdit = !!product;
     const modalRoot = document.getElementById('modal-root');
-    
+
     modalRoot.innerHTML = `
         <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
             <div class="bg-white w-full max-w-lg rounded-[32px] shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
@@ -955,5 +958,3 @@ function renderUserModal() {
         }
     };
 }
-
-init();

@@ -1,5 +1,6 @@
-const BASE_URL = 'http://localhost:5001/api';
-
+const BASE_URL = window.location.hostname === 'localhost'
+    ? 'http://localhost:5001/api'
+    : 'https://your-backend-url/api';
 const api = {
     async request(url, options = {}) {
         const token = localStorage.getItem('token');
@@ -21,7 +22,12 @@ const api = {
             return;
         }
 
-        const data = await response.json();
+        let data = {};
+        try {
+            data = await response.json();
+        } catch (e) {
+            data = {};
+        }
         if (!response.ok) {
             throw new Error(data.message || 'Something went wrong');
         }
