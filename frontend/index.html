@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Inventory Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .sidebar-link.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        .sidebar-link.active svg {
+            color: white;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex overflow-hidden">
+    <!-- Sidebar -->
+    <nav id="sidebar" class="w-[260px] bg-[#0f172a] text-slate-400 flex flex-col p-8 z-20 transition-all">
+        <div class="flex items-center gap-3 mb-10 text-white">
+            <span class="text-3xl">📦</span>
+            <h1 class="text-xl font-extrabold tracking-tight">Inventory Pro</h1>
+        </div>
+
+        <div id="nav-links" class="flex flex-col gap-2 overflow-y-auto pr-2">
+            <!-- Navigation links will be injected here by app.js -->
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+        <!-- Top Bar -->
+        <header class="mx-10 mt-6 mb-2 px-8 py-4 bg-white/95 backdrop-blur-md border border-slate-200 rounded-[20px] shadow-sm flex items-center justify-between sticky top-6 z-10">
+            <h2 id="page-title" class="text-xl font-extrabold text-slate-900 tracking-tight">Dashboard Overview</h2>
+            
+            <div class="flex items-center gap-6">
+                <div class="hidden sm:flex flex-col items-end">
+                    <span class="text-xs text-slate-500 font-medium">Welcome back,</span>
+                    <span id="user-name" class="text-sm font-bold text-slate-900">Admin User</span>
+                </div>
+                <button id="logout-btn" class="px-5 py-2.5 bg-red-50 text-red-600 hover:bg-red-100 font-bold rounded-xl transition-all text-sm">
+                    Logout
+                </button>
+            </div>
+        </header>
+
+        <!-- Dynamic Content Area -->
+        <div id="content-area" class="flex-1 p-10 overflow-y-auto">
+            <!-- Page content will be injected here -->
+            <div class="flex items-center justify-center h-full">
+                <div class="animate-pulse flex flex-col items-center gap-4">
+                    <div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                    <p class="text-slate-500 font-medium">Loading your dashboard...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modals Container -->
+    <div id="modal-root"></div>
+
+    <script type="module" src="js/app.js?v=1.1"></script>
+</body>
+</html>
